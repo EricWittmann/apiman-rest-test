@@ -7,22 +7,24 @@ Arquillian test suite then deploys apiman-gateway along with the neccessary gate
 ## Usage
 The only thing user needs to implement is their assertions and provide the test suite with Apiman service definition to be published before running the tests. Could look like the following:
 
-	@Override
-	public Service createApimanService() {
-		Policy p = new Policy();
-		p.setPolicyImpl("plugin:io.apiman.plugins:apiman-plugins-test-policy:1.1.1.Final:war/io.apiman.plugins.test_policy.TestPolicy");
-		p.setPolicyJsonConfig("");
+```java
+@Override
+public Service createApimanService() {
+	Policy p = new Policy();
+	p.setPolicyImpl("plugin:io.apiman.plugins:apiman-plugins-test-policy:1.1.1.Final:war/io.apiman.plugins.test_policy.TestPolicy");
+	p.setPolicyJsonConfig("");
 
-		Service s = new Service();
-		s.setEndpoint(String.format("http://%s:%s/apiman-echo/test", APIMAN_HOST, APIMAN_PORT));
-		s.setEndpointType("REST");
-		s.setPublicService(true);
-		s.setOrganizationId("PluginTestPolicyTest");
-		s.setServiceId("echo");
-		s.setVersion("1.0");
-		s.setServicePolicies(Arrays.asList(p));
-		return s;
-	}
+	Service s = new Service();
+	s.setEndpoint(String.format("http://%s:%s/apiman-echo/test", APIMAN_HOST, APIMAN_PORT));
+	s.setEndpointType("REST");
+	s.setPublicService(true);
+	s.setOrganizationId("PluginTestPolicyTest");
+	s.setServiceId("echo");
+	s.setVersion("1.0");
+	s.setServicePolicies(Arrays.asList(p));
+	return s;
+}
+```
 
 See [PolicyPluginTest](https://github.com/sbunciak/apiman-rest-test/blob/master/src/test/java/org/jboss/apiman/qa/rest/PolicyPluginTest.java).
 
