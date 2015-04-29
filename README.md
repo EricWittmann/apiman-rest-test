@@ -5,7 +5,7 @@ Maven build prepares a fresh installation of wildfly, deploys apiman-modules, co
 Arquillian test suite then deploys apiman-gateway along with the neccessary gateway api, and spins up the well-known echo service so plugin developers can test their plugins out-of-the-box.
 
 ## Usage
-Only thing user needs to implement is their assertions and provide the test suite with Apiman service definition to be published before running the tests. Could look like the following:
+The only thing user needs to implement is their assertions and provide the test suite with Apiman service definition to be published before running the tests. Could look like the following:
 
 	@Override
 	public Service createApimanService() {
@@ -24,7 +24,7 @@ Only thing user needs to implement is their assertions and provide the test suit
 		return s;
 	}
 
-See PolicyPluginTest.
+See [PolicyPluginTest](https://github.com/sbunciak/apiman-rest-test/blob/master/src/test/java/org/jboss/apiman/qa/rest/PolicyPluginTest.java).
 
 ## Running
 	mvn clean install [-Dapiman.host=<host> -Dapiman.port=<port> -Dapiman.user=<user> -Dapiman.pwd=<pwd>]
