@@ -22,10 +22,8 @@ import javax.ws.rs.core.Response;
 import io.apiman.gateway.engine.beans.Service;
 
 /**
- * Demo on how to use Arquillian REST Extension.
- * <br/>
- * For more use cases see https://github.com/arquillian/arquillian-extension-rest/blob/master/rest-client/ftest/ftest-impl-3x/src/test/java/rest/RestClientTestCase.java
- * 
+ * Base class for Apiman Plugin Tests.
+ *
  * @author sbunciak
  */
 @RunWith(Arquillian.class)
@@ -38,6 +36,13 @@ public abstract class AbstractPluginTest {
 	protected static final String APIMAN_USER = System.getProperty("apiman.user", "admin");
 	protected static final String APIMAN_PWD = System.getProperty("apiman.pwd", "admin123!");
 
+	// Apiman service under test
+	private Service apimanService;
+
+	public AbstractPluginTest() {
+		this.apimanService = createApimanService();
+	}
+
 	@Deployment(name = "echo", order = 1)
 	public static WebArchive createEchoService() {
 		WebArchive echo =
@@ -46,7 +51,7 @@ public abstract class AbstractPluginTest {
 						.withTransitivity()
 						.asSingle(WebArchive.class);
 
-		//		System.out.println(api.toString(true));
+		// System.out.println(api.toString(true));
 		return echo;
 	}
 
@@ -58,7 +63,7 @@ public abstract class AbstractPluginTest {
 						.withTransitivity()
 						.asSingle(WebArchive.class);
 
-		//		System.out.println(api.toString(true));
+		// System.out.println(api.toString(true));
 		return api;
 	}
 
@@ -70,7 +75,7 @@ public abstract class AbstractPluginTest {
 						.withTransitivity()
 						.asSingle(WebArchive.class);
 
-		//	System.out.println(gateway.toString(true));
+		// System.out.println(gateway.toString(true));
 		return gateway;
 	}
 
@@ -80,12 +85,12 @@ public abstract class AbstractPluginTest {
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		ResteasyWebTarget target = client.target(String.format(
 				"http://%s:%s/apiman-gateway-api/services", APIMAN_HOST, APIMAN_PORT));
-		// System.out.println(target.getUri());
+		// System.out.println("PUT: " +target.getUri());
 
 		Response response = target.request().header("Authorization", getAuthHeader())
-				.put(Entity.entity(getService(), MediaType.APPLICATION_JSON));
-		//Read output in string format
-		//System.out.println(response.getStatus());
+				.put(Entity.entity(apimanService, MediaType.APPLICATION_JSON));
+		// Read output in string format
+		// System.out.println(response.getStatus());
 		response.close();
 	}
 
@@ -94,7 +99,7 @@ public abstract class AbstractPluginTest {
 	 * 
 	 * @return io.apiman.gateway.engine.beans.Service
 	 */
-	public abstract Service getService();
+	public abstract Service createApimanService();
 
 	private String getAuthHeader() {
 		return "Basic " + Base64.encodeBase64String(new String(APIMAN_USER + ":" + APIMAN_PWD).getBytes());
@@ -102,6 +107,17 @@ public abstract class AbstractPluginTest {
 
 	@After
 	public void tearDownPluginTest() {
-		// TODO
+		// Delete service from registry
+		ResteasyClient client = new ResteasyClientBuilder().build();
+		ResteasyWebTarget target = client.target(String.format(
+				"http://%s:%s/apiman-gateway-api/services/%s/%s/%s", APIMAN_HOST, APIMAN_PORT,
+				apimanService.getOrganizationId(), apimanService.getServiceId(), apimanService.getVersion()));
+		// System.out.println("DELETE: "+target.getUri());
+
+		Response response = target.request().header("Authorization", getAuthHeader()).delete();
+		//Read output in string format
+
+		// System.out.println(response.getStatus());
+		response.close();
 	}
 }

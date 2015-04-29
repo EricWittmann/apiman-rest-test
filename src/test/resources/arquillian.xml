@@ -6,7 +6,8 @@
 
     <configuration>
       <property name="jbossHome">target/wildfly-8.2.0.Final</property>
-      <property name="javaVmArguments">-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n</property>
+      <property name="javaVmArguments">-Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n -Djboss.http.port=${apiman.port:8080} -Djboss.bind.address=${apiman.host:localhost}</property>
+      <property name="serverConfig">standalone-apiman.xml</property>
     </configuration>
   </container>
 

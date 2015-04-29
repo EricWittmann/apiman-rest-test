@@ -387,16 +387,4 @@
             <remote-destination host="localhost" port="25"/>
         </outbound-socket-binding>
     </socket-binding-group>
-
-    <deployments>
-        <deployment name="apiman-quickstarts-echo-service-1.1.0.Final.war" runtime-name="apiman-quickstarts-echo-service-1.1.0.Final.war">
-            <content sha1="bff720bcfb21af433537571ef73e2c965fbed912"/>
-        </deployment>
-        <deployment name="apiman-gateway-platforms-war-wildfly8-api-1.1.0.Final.war" runtime-name="apiman-gateway-platforms-war-wildfly8-api-1.1.0.Final.war">
-            <content sha1="5fef49e2c7bd9e474aed3aca6b057c79a8c5ae06"/>
-        </deployment>
-        <deployment name="apiman-gateway-platforms-war-wildfly8-gateway-1.1.0.Final.war" runtime-name="apiman-gateway-platforms-war-wildfly8-gateway-1.1.0.Final.war">
-            <content sha1="59fe70eb7e02a9df916ef2abc0fe02960e5f98bb"/>
-        </deployment>
-    </deployments>
 </server>

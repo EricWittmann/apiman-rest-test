@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.jboss.apiman.qa</groupId>
-  <artifactId>rest-api-test</artifactId>
+  <groupId>org.jboss.qa.apiman</groupId>
+  <artifactId>plugin-test</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <properties>
@@ -253,7 +253,7 @@
             <apiman.host>${apiman.host}</apiman.host>
             <apiman.port>${apiman.port}</apiman.port>
             <apiman.user>${apiman.user}</apiman.user>
-            <apiman.pwd>${apiman.ped}</apiman.pwd>
+            <apiman.pwd>${apiman.pwd}</apiman.pwd>
           </systemPropertyVariables>
         </configuration>
       </plugin>
