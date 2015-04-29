@@ -13,7 +13,10 @@
     <version.wildfly>8.2.0.Final</version.wildfly>
     <version.apiman>1.1.1.Final</version.apiman>
     <jboss.home>${project.build.directory}/wildfly-${version.wildfly}</jboss.home>
-    <jboss.modules>${project.build.directory}/wildfly-${version.wildfly}/modules</jboss.modules>
+    <apiman.host>localhost</apiman.host>
+    <apiman.port>8080</apiman.port>
+    <apiman.user>admin</apiman.user>
+    <apiman.pwd>admin123!</apiman.pwd>
   </properties>
 
   <dependencyManagement>
@@ -118,18 +121,11 @@
     </dependency>
 
     <dependency>
-      <artifactId>apiman-gateway-platforms-war-wildfly8-modules</artifactId>
       <groupId>io.apiman</groupId>
+      <artifactId>apiman-gateway-platforms-war-wildfly8-modules</artifactId>
       <version>${version.apiman}</version>
+      <scope>test</scope>
       <type>zip</type>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.maven.shared</groupId>
-      <artifactId>maven-invoker</artifactId>
-      <version>2.2</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -215,6 +211,7 @@
                   <directory>src/test/resources</directory>
                   <includes>
                     <include>apiman.properties</include>
+                    <include>standalone-apiman.xml</include>
                   </includes>
                 </resource>
               </resources>
@@ -235,10 +232,10 @@
             </goals>
             <configuration>
               <executable>${jboss.home}/bin/add-user.${script.extension}</executable>
-              <commandlineArgs>-a -s -g 'apiuser,apipublisher,apiadmin' -u 'admin' -p 'admin123!'</commandlineArgs>
+              <commandlineArgs>-a -s -g 'apiuser,apipublisher,apiadmin' -u '${apiman.user}' -p '${apiman.pwd}'</commandlineArgs>
               <environmentVariables>
-                  <!-- avoid "Press any key to continue ..." message on Windows -->
-                  <NOPAUSE>true</NOPAUSE>
+                <!-- avoid "Press any key to continue ..." message on Windows -->
+                <NOPAUSE>true</NOPAUSE>
               </environmentVariables>
             </configuration>
           </execution>
@@ -248,14 +245,16 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
         <configuration>
           <systemPropertyVariables>
             <jboss.home>${jboss.home}</jboss.home>
-            <module.path>${jboss.modules}</module.path>
             <version.apiman>${version.apiman}</version.apiman>
-            <!-- TODO: host,port,user,pwd -->
+            <apiman.host>${apiman.host}</apiman.host>
+            <apiman.port>${apiman.port}</apiman.port>
+            <apiman.user>${apiman.user}</apiman.user>
+            <apiman.pwd>${apiman.ped}</apiman.pwd>
           </systemPropertyVariables>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
         </configuration>
       </plugin>
     </plugins>

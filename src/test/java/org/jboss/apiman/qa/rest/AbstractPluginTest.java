@@ -1,6 +1,6 @@
 package org.jboss.apiman.qa.rest;
 
-import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.apache.commons.codec.binary.Base64;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -19,12 +19,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import io.apiman.gateway.engine.beans.Policy;
 import io.apiman.gateway.engine.beans.Service;
-import io.apiman.manager.api.beans.plugins.PluginBean;
 
 /**
  * Demo on how to use Arquillian REST Extension.
@@ -37,7 +32,11 @@ import io.apiman.manager.api.beans.plugins.PluginBean;
 @RunAsClient
 public abstract class AbstractPluginTest {
 
-	private static final String APIMAN_VERSION = System.getProperty("version.apiman", "1.1.0.Final");
+	protected static final String APIMAN_VERSION = System.getProperty("version.apiman", "1.1.1.Final");
+	protected static final String APIMAN_HOST = System.getProperty("apiman.host", "localhost");
+	protected static final String APIMAN_PORT = System.getProperty("apiman.port", "8080");
+	protected static final String APIMAN_USER = System.getProperty("apiman.user", "admin");
+	protected static final String APIMAN_PWD = System.getProperty("apiman.pwd", "admin123!");
 
 	@Deployment(name = "echo", order = 1)
 	public static WebArchive createEchoService() {
@@ -74,50 +73,31 @@ public abstract class AbstractPluginTest {
 		//	System.out.println(gateway.toString(true));
 		return gateway;
 	}
-//TODO executing multiple times!!!!
+
 	@Before
-	public void setupAbstractPluginTest() throws MavenInvocationException {
+	public void setupAbstractPluginTest() {
 		// Publish Echo service
 		ResteasyClient client = new ResteasyClientBuilder().build();
 		ResteasyWebTarget target = client.target(String.format(
-				"http://%s:%s/apiman-gateway-api/services", getApimanHost(), getApimanPort()));
-		System.out.println(target.getUri());
+				"http://%s:%s/apiman-gateway-api/services", APIMAN_HOST, APIMAN_PORT));
+		// System.out.println(target.getUri());
 
 		Response response = target.request().header("Authorization", getAuthHeader())
 				.put(Entity.entity(getService(), MediaType.APPLICATION_JSON));
 		//Read output in string format
-		System.out.println(response.getStatus());
+		//System.out.println(response.getStatus());
 		response.close();
 	}
 
-	public Service getService() {
-		Policy p = new Policy();
-		p.setPolicyImpl("plugin:io.apiman.plugins:apiman-plugins-config-policy:1.1.0.Final:war/io.apiman.plugins.config_policy.ConfigPolicy");
-		
-		Service s = new Service();
-		s.setEndpoint(String.format("http://%s:%s/apiman-echo/test", getApimanHost(), getApimanPort()));
-		s.setEndpointType("REST");
-		s.setPublicService(true);
-		s.setOrganizationId("PluginTestPolicyTest");
-		s.setServiceId("echo");
-		s.setVersion("1.0");
-		s.setServicePolicies(Arrays.asList(p));
-		return s;
-	}
-	
-	// TODO
-	public String getApimanHost() {
-		return "localhost";
-	}
+	/**
+	 * Method to be implemented by particular tests.
+	 * 
+	 * @return io.apiman.gateway.engine.beans.Service
+	 */
+	public abstract Service getService();
 
-	// TODO
-	public int getApimanPort() {
-		return 8080;
-	}
-	
-	// TODO
-	public String getAuthHeader() {
-		return "Basic YWRtaW46YWRtaW4xMjMh";
+	private String getAuthHeader() {
+		return "Basic " + Base64.encodeBase64String(new String(APIMAN_USER + ":" + APIMAN_PWD).getBytes());
 	}
 
 	@After
