@@ -11,7 +11,7 @@
     <version.resteasy>3.0.11.Final</version.resteasy>
     <version.rest.extension>1.0.0.Alpha3</version.rest.extension>
     <version.wildfly>8.2.0.Final</version.wildfly>
-    <version.apiman>1.1.0.Final</version.apiman>
+    <version.apiman>1.1.1.Final</version.apiman>
     <jboss.home>${project.build.directory}/wildfly-${version.wildfly}</jboss.home>
     <jboss.modules>${project.build.directory}/wildfly-${version.wildfly}/modules</jboss.modules>
   </properties>
@@ -120,7 +120,7 @@
     <dependency>
       <artifactId>apiman-gateway-platforms-war-wildfly8-modules</artifactId>
       <groupId>io.apiman</groupId>
-      <version>1.1.0.Final</version>
+      <version>${version.apiman}</version>
       <type>zip</type>
       <scope>test</scope>
     </dependency>
@@ -236,6 +236,10 @@
             <configuration>
               <executable>${jboss.home}/bin/add-user.${script.extension}</executable>
               <commandlineArgs>-a -s -g 'apiuser,apipublisher,apiadmin' -u 'admin' -p 'admin123!'</commandlineArgs>
+              <environmentVariables>
+                  <!-- avoid "Press any key to continue ..." message on Windows -->
+                  <NOPAUSE>true</NOPAUSE>
+              </environmentVariables>
             </configuration>
           </execution>
         </executions>
